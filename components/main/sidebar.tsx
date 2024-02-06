@@ -1,14 +1,14 @@
 "use client";
 
-import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
-import { ChevronsLeft, Menu as MenuIcon, PlusSquare, ScrollText } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { useRouter } from 'next/navigation';
-import { createNewNote, getAllNotes } from "@/dynamo-client";
+import React, {Dispatch, SetStateAction, useEffect, useRef, useState} from 'react';
+import {ChevronsLeft, Menu as MenuIcon, PlusSquare, ScrollText} from "lucide-react";
+import {Button} from "@/components/ui/button";
+import {useRouter} from 'next/navigation';
+import {createNewNote, getAllNotes} from "@/dynamo-client";
 
 interface Note {
-    title: string;
-    id: string;
+    title: { S: string };
+    id: { S: string };
 }
 
 interface SidebarProps {
@@ -16,7 +16,7 @@ interface SidebarProps {
     setIsOpen: Dispatch<SetStateAction<boolean>>;
 }
 
-export const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen }) => {
+export const Sidebar: React.FC<SidebarProps> = ({isOpen, setIsOpen}) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const router = useRouter();
 
@@ -27,7 +27,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen }) => {
         const newNoteId = await createNewNote();
 
         if (newNoteId) {
-            setNotes([...notes, { title: 'Untitled Note', id: newNoteId }]);
+            setNotes([...notes, {title: { S: 'Untitled Note' }, id: { S: newNoteId }}]);
 
             // Navigate to the new note
             router.push(`/notes/${newNoteId}`);
@@ -76,17 +76,17 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen }) => {
                     />
                     <Button className='h-10 w-40 relative cursor-pointer' onClick={handleAddNote}>
                         <div className='flex'>
-                            Add Notes <PlusSquare className='ml-2' />
+                            Add Notes <PlusSquare className='ml-2'/>
                         </div>
                     </Button>
                     <div className="h-10 top-10 w-50 relative">
                         <h2>Notes</h2>
-                        {notes.map(({ title, id }, index) => (
+                        {notes.map(({title: {S: titleS}, id: {S: idS}}, index) => (
                             <div key={index}
                                  className="flex mt-2 p-3 font-semibold hover:bg-gray-300 rounded cursor-pointer"
-                                 onClick={() => router.push(`/notes/${id.S}`)}
+                                 onClick={() => router.push(`/notes/${idS}`)}
                             >
-                                <ScrollText className="mr-2" /> {title.S}...
+                                <ScrollText className="mr-2"/> {titleS}...
                             </div>
                         ))}
                     </div>
