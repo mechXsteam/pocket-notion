@@ -30,8 +30,8 @@ const NoteEditor: React.FC<NoteEditorProps> = ({params}) => {
         const fetchNoteData = async () => {
             const noteData = await getNoteByID(params.id);
             if (noteData) {
-                setTitle(noteData.title || 'Untitled Note');
-                setNote(noteData.note || '');
+                setTitle(noteData.title.S || 'Untitled Note');
+                setNote(noteData.note.S || '');
                 setMarkdown(noteData.note.S || '')
             }
         };
@@ -54,6 +54,7 @@ const NoteEditor: React.FC<NoteEditorProps> = ({params}) => {
         try {
             const doc = new jsPDF({orientation: 'portrait', unit: 'mm', format: 'a4'});
             doc.text(markdown, 10, 10);
+            // @ts-ignore
             doc.save(`${title.S}.pdf`);
 
         } catch (error) {
@@ -68,17 +69,17 @@ const NoteEditor: React.FC<NoteEditorProps> = ({params}) => {
             <div className={`flex flex-col transition-all duration-300 ease-in-out ${isOpen ? 'ml-64' : 'ml-0'}`}>
                 <input
                     type="text"
-                    value={title ? title.S : ""}
+                    value={title ? title : ""}
                     onChange={(event) => {
                         setTitle(event.target.value);
-                        updateNoteByID(params.id, event.target.value, note.S);
+                        updateNoteByID(params.id, event.target.value, note);
                     }}
                     className="text-5xl border-0 outline-none mx-10 font-extrabold w-full mt-10"
                     placeholder="Untitled Note"
                 />
                 <div onClick={handleSavePdf} className="flex ml-auto cursor-pointer transition-colors duration-200 hover:bg-gray-200 rounded-2xl p-3 font-semibold"><Download className='mr-2'/>Save as PDF</div>
                 <div className="mt-5">
-                    <Editor note_id={params.id} note={note.S} title={title} markdown={markdown} setMarkdown={setMarkdown} setTitle={setTitle}/>
+                    <Editor note_id={params.id} note={note} title={title} markdown={markdown} setMarkdown={setMarkdown} setTitle={setTitle}/>
                 </div>
             </div>
         </div>
