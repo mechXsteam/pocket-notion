@@ -41,7 +41,7 @@ export default function Editor({ note_id, title, note, markdown, setMarkdown, se
     const editor: BlockNoteEditor = useBlockNote({
         initialContent: parsedNote,
         onEditorContentChange: debounce((editor) => {
-            updateNoteByID(note_id, title.S, JSON.stringify(editor.topLevelBlocks, null, 2));
+            updateNoteByID(note_id, title, JSON.stringify(editor.topLevelBlocks, null, 2));
             const saveBlocksAsMarkdown = async () => {
                 const markdown: string =
                     await editor.blocksToMarkdownLossy(editor.topLevelBlocks);
